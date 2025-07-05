@@ -1,44 +1,29 @@
-from flask import Flask, request, render_template
+import streamlit as st
 import numpy as np
 import pickle
 
 # Load trained Random Forest model
 model = pickle.load(open('RandomForest.pkl', 'rb'))
 
-# Initialize Flask app
-app = Flask(__name__)
+# App Title
+st.set_page_config(page_title="Crop Recommendation", layout="centered")
+st.title("🌾 Crop Recommendation System")
+st.markdown("Fill in the following field values to predict the most suitable crop.")
 
-# Homepage
-@app.route('/')
-def index():
-    return render_template("index.html")
+# User input fields
+N = st.number_input("Nitrogen", min_value=0.0, step=1.0)
+P = st.number_input("Phosphorus", min_value=0.0, step=1.0)
+K = st.number_input("Potassium", min_value=0.0, step=1.0)
+temp = st.number_input("Temperature (°C)", step=0.1)
+humidity = st.number_input("Humidity (%)", step=0.1)
+ph = st.number_input("Soil pH", step=0.1)
+rainfall = st.number_input("Rainfall (mm)", step=0.1)
 
-# Prediction route
-@app.route("/predict", methods=['POST'])
-def predict():
+# Predict Button
+if st.button("Predict"):
     try:
-        # Get form inputs
-        N = float(request.form['Nitrogen'])
-        P = float(request.form['Phosporus'])
-        K = float(request.form['Potassium'])
-        temp = float(request.form['Temperature'])
-        humidity = float(request.form['Humidity'])
-        ph = float(request.form['Ph'])
-        rainfall = float(request.form['Rainfall'])
-
-        # Put input into correct format
         input_data = np.array([[N, P, K, temp, humidity, ph, rainfall]])
-
-        # Predict crop directly
-        prediction = model.predict(input_data)[0]  # Output will be a string like 'rice'
-
-        result = f"🌱 {prediction} is the best crop to be cultivated right there."
-
+        prediction = model.predict(input_data)[0]
+        st.success(f"🌱 {prediction} is the best crop to be cultivated right there.")
     except Exception as e:
-        result = f"❌ Error: {str(e)}"
-
-    return render_template("index.html", result=result)
-
-# Run the app
-if __name__ == "__main__":
-    app.run(debug=True)
+        st.error(f"❌ Error: {str(e)}")
