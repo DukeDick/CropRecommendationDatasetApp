@@ -7,7 +7,7 @@ model = pickle.load(open('RandomForest.pkl', 'rb'))
 
 # App Title
 st.set_page_config(page_title="Smart Crop Recommendation", layout="centered")
-st.title("🍄Smart Crop Recommendation System")
+st.title("🍄Crop Recommendation System")
 st.markdown("Fill in the following field values to predict the most suitable crop.")
 
 # User input fields
