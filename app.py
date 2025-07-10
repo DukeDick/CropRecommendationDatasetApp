@@ -27,5 +27,3 @@ if st.button("Predict"):
         st.success(f"🌱 {prediction} is the best crop to be cultivated right there.")
     except Exception as e:
         st.error(f"❌ Error: {str(e)}")
-
-bro it's not centered 
